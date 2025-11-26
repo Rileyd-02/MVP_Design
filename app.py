@@ -2,13 +2,12 @@ import streamlit as st
 from generate_brief import generate_ai_brief
 from pdf_export import create_pdf
 
-st.set_page_config(page_title="Product Brief Generator", page_icon="🧵", layout="centered")
+st.set_page_config(page_title="Product Description Generator", page_icon="🩱", layout="centered")
+st.title("🧵🤷‍♂️🩱 Product Description Generator")
 
-st.title("🧵 Product Brief Generator (AI Powered)")
+st.write("Generate structured product briefs for merchandising/design teams instantly.")
 
-st.write("Generate clean, consistent product briefs for merchandising, design, and PLM teams — instantly.")
-
-# ---- INPUT FIELDS ----
+# --- Input Fields ---
 col1, col2 = st.columns(2)
 
 with col1:
@@ -23,28 +22,27 @@ with col2:
 
 main_fabric = st.text_input("Main Fabric")
 secondary_fabric = st.text_input("Secondary Fabric (optional)")
-attributes = st.text_area("Key Attributes (comma separated)", 
+attributes = st.text_area("Key Attributes (comma separated)",
                           placeholder="moisture wicking, 4-way stretch, soft-hand feel")
 
 st.divider()
 
-# ---- GENERATE BUTTON ----
+# --- Generate Button ---
 if st.button("Generate Brief 🚀", type="primary"):
-    with st.spinner("Generating content with OpenAI…"):
-        
-        inputs = {
-            "product_line": product_line,
-            "category": category,
-            "style_name": style_name,
-            "season": season,
-            "customer": customer,
-            "use_case": use_case,
-            "main_fabric": main_fabric,
-            "secondary_fabric": secondary_fabric,
-            "attributes": attributes
-        }
-
+    with st.spinner("Generating product brief…"):
         try:
+            inputs = {
+                "product_line": product_line,
+                "category": category,
+                "style_name": style_name,
+                "season": season,
+                "customer": customer,
+                "use_case": use_case,
+                "main_fabric": main_fabric,
+                "secondary_fabric": secondary_fabric,
+                "attributes": attributes
+            }
+
             result = generate_ai_brief(inputs)
         except Exception as e:
             st.error(f"Error generating brief: {e}")
@@ -52,11 +50,11 @@ if st.button("Generate Brief 🚀", type="primary"):
 
         st.success("Brief Generated Successfully!")
 
-        st.subheader("📄 Final Output")
+        st.subheader("📄 Product Brief")
         st.write(result)
 
-        # Download PDF
-        pdf_file = create_pdf(result, "product_brief.pdf")
+        # --- Download PDF ---
+        pdf_file = create_pdf(result)
         with open(pdf_file, "rb") as f:
             st.download_button(
                 label="Download PDF",
