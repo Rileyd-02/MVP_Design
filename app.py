@@ -7,14 +7,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 st.set_page_config("Product Brief Generator", "🩱")
-st.title("🧵 Product Brief Generator (OpenRouter)")
+st.title("🧵 Product Description Generator - MAS")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    product_line = st.selectbox("Product Line", ["Active", "Casual", "Lounge"])
+    product_line = st.selectbox("Product Line", ["Active", "Casual", "Lounge","Athleisure"])
     season = st.selectbox("Season", ["SS25", "AW25"])
-    customer = st.selectbox("Customer", ["Men", "Women", "Kids"])
+    customer = st.selectbox("Customer", ["Men", "Women", "Kids","LGBTQ+","Unisex"])
 
 with col2:
     category = st.text_input("Category")
@@ -49,3 +49,4 @@ if st.button("Generate Brief 🚀", type="primary"):
     pdf = create_pdf(brief)
     with open(pdf, "rb") as f:
         st.download_button("Download PDF", f, file_name="product_brief.pdf")
+
