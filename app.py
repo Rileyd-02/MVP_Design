@@ -1,9 +1,15 @@
 import streamlit as st
 from generate_brief import generate_ai_brief
 from pdf_export import create_pdf
+from utils import save_brief_locally, clean_input
+from dotenv import load_dotenv
+import os
 
-st.set_page_config(page_title="Product Description Generator", page_icon="🩱", layout="centered")
-st.title("🧵🤷‍♂️🩱 Product Description Generator")
+# Load .env locally (optional)
+load_dotenv()
+
+st.set_page_config(page_title="Product Brief Generator", page_icon="🧵", layout="centered")
+st.title("🩱🩱 Product Brief Generator (OpenRouter AI)")
 
 st.write("Generate structured product briefs for merchandising/design teams instantly.")
 
@@ -22,8 +28,10 @@ with col2:
 
 main_fabric = st.text_input("Main Fabric")
 secondary_fabric = st.text_input("Secondary Fabric (optional)")
-attributes = st.text_area("Key Attributes (comma separated)",
-                          placeholder="moisture wicking, 4-way stretch, soft-hand feel")
+attributes = st.text_area(
+    "Key Attributes (comma separated)",
+    placeholder="moisture wicking, 4-way stretch, soft-hand feel"
+)
 
 st.divider()
 
@@ -31,19 +39,23 @@ st.divider()
 if st.button("Generate Brief 🚀", type="primary"):
     with st.spinner("Generating product brief…"):
         try:
+            # Clean inputs
             inputs = {
-                "product_line": product_line,
-                "category": category,
-                "style_name": style_name,
-                "season": season,
-                "customer": customer,
-                "use_case": use_case,
-                "main_fabric": main_fabric,
-                "secondary_fabric": secondary_fabric,
-                "attributes": attributes
+                "product_line": clean_input(product_line),
+                "category": clean_input(category),
+                "style_name": clean_input(style_name),
+                "season": clean_input(season),
+                "customer": clean_input(customer),
+                "use_case": clean_input(use_case),
+                "main_fabric": clean_input(main_fabric),
+                "secondary_fabric": clean_input(secondary_fabric),
+                "attributes": clean_input(attributes)
             }
 
             result = generate_ai_brief(inputs)
+
+            # Auto-save the brief locally
+            saved_file = save_brief_locally(result)
         except Exception as e:
             st.error(f"Error generating brief: {e}")
             st.stop()
@@ -52,6 +64,8 @@ if st.button("Generate Brief 🚀", type="primary"):
 
         st.subheader("📄 Product Brief")
         st.write(result)
+
+        st.info(f"Brief auto-saved locally: `{saved_file}`")
 
         # --- Download PDF ---
         pdf_file = create_pdf(result)
