@@ -1,14 +1,19 @@
+import os
 from openai import OpenAI
-from utils import get_openai_key
 
-def generate_ai_brief(inputs):
-    """Generates a full product brief using OpenAI LLM."""
-    
-    client = OpenAI(api_key=get_openai_key())
+def generate_ai_brief(inputs: dict) -> str:
+    """
+    Generate a product brief using OpenRouter API.
+    inputs: dict containing product details
+    """
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    model = os.getenv("OPENROUTER_MODEL", "gpt-4o-mini")
+
+    client = OpenAI(api_key=api_key, api_base="https://openrouter.ai/api/v1")
 
     prompt = f"""
-    Create a professional product brief for the fashion/apparel industry.
-    
+    Create a professional product brief for fashion/apparel.
+
     PRODUCT DETAILS:
     - Product Line: {inputs['product_line']}
     - Category: {inputs['category']}
@@ -24,15 +29,15 @@ def generate_ai_brief(inputs):
     1. Narrative Brief (2–3 sentences)
     2. Key Features (bullet points ending with semicolons)
     3. Selling Points (Marketing-style bullets)
-    4. Tech Pack Summary (clean, structured list)
+    4. Tech Pack Summary (structured list)
 
-    Keep wording professional and specific to apparel.
+    Keep the tone professional and specific to apparel.
     """
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=model,
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.6
+        temperature=0.7
     )
 
     return response.choices[0].message.content
