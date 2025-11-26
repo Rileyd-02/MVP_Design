@@ -1,9 +1,9 @@
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
 
-def create_pdf(text, filename):
-    """Generate a PDF from final text."""
+def create_pdf(text: str, filename="product_brief.pdf") -> str:
+    """Create a PDF from text."""
     styles = getSampleStyleSheet()
     story = [Paragraph(p, styles['Normal']) for p in text.split("\n")]
 
