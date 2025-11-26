@@ -3,13 +3,18 @@ from openai import OpenAI
 
 def generate_ai_brief(inputs: dict) -> str:
     """
-    Generate a product brief using OpenRouter API.
-    inputs: dict containing product details
+    Generate a product brief using OpenRouter API (OpenAI-compatible endpoint)
     """
+    # Read secrets from environment variables
     api_key = os.getenv("OPENROUTER_API_KEY")
+    api_base = os.getenv("OPENROUTER_API_BASE", "https://openrouter.ai/api/v1")
     model = os.getenv("OPENROUTER_MODEL", "gpt-4o-mini")
 
-    client = OpenAI(api_key=api_key, api_base="https://openrouter.ai/api/v1")
+    # Set environment variables for OpenAI SDK
+    os.environ["OPENAI_API_KEY"] = api_key
+    os.environ["OPENAI_API_BASE"] = api_base
+
+    client = OpenAI()  # No arguments needed
 
     prompt = f"""
     Create a professional product brief for fashion/apparel.
